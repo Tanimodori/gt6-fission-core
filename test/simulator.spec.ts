@@ -37,4 +37,14 @@ describe('Simulator init function', () => {
     const cellOut = initCells([cellIn])[0];
     DoubleU235Check(cellOut);
   });
+
+  it('Should accept rods input as { type, x, y } and { type, duability }', () => {
+    const rods = [
+      { type: U235.fullname, duability: 0 },
+      { type: U235.fullname, x: 1, y: 1 },
+    ];
+    const cellIn: CellInput = { ...basicCell, rods };
+    const cellOut = initCells([cellIn])[0];
+    DoubleU235Check(cellOut, [{ duability: 0 }, { y: 1 }]);
+  });
 });

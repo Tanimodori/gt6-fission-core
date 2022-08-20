@@ -7,7 +7,7 @@ import { DefaultRodTypesArray } from './rodTypes';
  * @param types a list of available rod types if provided
  * @returns the rod type with matched name
  */
-function getRodType(fullname: string, types?: RodType[]) {
+export function getRodType(fullname: string, types?: RodType[]) {
   types = types ?? DefaultRodTypesArray;
   const type = types.find((x) => x.fullname === fullname);
   if (!type) {
@@ -22,7 +22,7 @@ function getRodType(fullname: string, types?: RodType[]) {
  * @param index the index of the rod in its cell
  * @returns the corresponding x and y data
  */
-function getDefaultPos(index: number) {
+export function getDefaultPos(index: number) {
   if (index < 0 || index >= 4) {
     throw new Error(`Default pos of rod[${index}]is out of range [0,3]`);
   }
@@ -36,7 +36,7 @@ function getDefaultPos(index: number) {
  * @param cellsIn input cell data
  * @returns cell data sanitized
  */
-function initCells(cellsIn: CellInput[]) {
+export function initCells(cellsIn: CellInput[]) {
   const cellsOut: Cell[] = [];
   for (const cellIn of cellsIn) {
     const cellOut: Cell = { ...cellIn, rods: [] };

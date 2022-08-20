@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 
 import { DefaultRodTypes } from 'src/simulation/rodTypes';
-import { initCells } from 'src/simulation/simulator';
+import { initCells, posToString } from 'src/simulation/simulator';
 import { Cell, CellInput, Rod } from 'src/types';
 
 const U235 = DefaultRodTypes.Uranium235;
 
-describe('Simulator init function', () => {
+describe('simulator init function', () => {
   /**
    * Check if the cell contains double U235
    * @param cell cell to be checked
@@ -26,19 +26,19 @@ describe('Simulator init function', () => {
 
   const basicCell = { x: 0, y: 0, fluid: 'Water', type: '2x2' as const };
 
-  it('Should accept rods input as string', () => {
+  it('should accept rods input as string', () => {
     const cellIn: CellInput = { ...basicCell, rods: [U235.fullname, U235.fullname] };
     const cellOut = initCells([cellIn])[0];
     DoubleU235Check(cellOut);
   });
 
-  it('Should accept rods input as { type }', () => {
+  it('should accept rods input as { type }', () => {
     const cellIn: CellInput = { ...basicCell, rods: [{ type: U235.fullname }, { type: U235.fullname }] };
     const cellOut = initCells([cellIn])[0];
     DoubleU235Check(cellOut);
   });
 
-  it('Should accept rods input as { type, x, y } and { type, duability }', () => {
+  it('should accept rods input as { type, x, y } and { type, duability }', () => {
     const rods = [
       { type: U235.fullname, duability: 0 },
       { type: U235.fullname, x: 1, y: 1 },
@@ -46,5 +46,12 @@ describe('Simulator init function', () => {
     const cellIn: CellInput = { ...basicCell, rods };
     const cellOut = initCells([cellIn])[0];
     DoubleU235Check(cellOut, [{ duability: 0 }, { y: 1 }]);
+  });
+});
+
+describe('simulator posToString function', () => {
+  it('should accept multiple pos', () => {
+    const pos = { x: 1, y: 2 };
+    expect(posToString(pos, pos)).toBe('1,2,1,2');
   });
 });

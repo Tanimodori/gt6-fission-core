@@ -1,14 +1,19 @@
 import { Config, CellInput, Rod, RodType, Cell } from 'src/types';
+import { DefaultRodTypesArray } from './rodTypes';
 
 /**
  * Get the rod type data by name.
- * @param type the type name of rod
+ * @param fullname the fullname name of rod type
  * @param types a list of available rod types if provided
  * @returns the rod type with matched name
  */
-function getRodType(type: string, types?: RodType[]) {
-  // TODO
-  return -1;
+function getRodType(fullname: string, types?: RodType[]) {
+  types = types ?? DefaultRodTypesArray;
+  const type = types.find((x) => x.fullname === fullname);
+  if (!type) {
+    throw new Error(`Cannot find rod type with fullname ${fullname}`);
+  }
+  return type;
 }
 
 /**
@@ -39,7 +44,7 @@ function initCells(cellsIn: CellInput[]) {
       const rodIn = cellIn.rods[i];
       const { x, y } = 'x' in rodIn ? rodIn : getDefaultPos(i);
       const type = typeof rodIn === 'string' ? rodIn : rodIn.type;
-      const duability = getRodType(type);
+      const duability = getRodType(type).duability;
       const rodOut = { x, y, type, duability, cell: cellOut };
       cellOut.rods.push(rodOut);
     }

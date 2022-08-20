@@ -1,3 +1,11 @@
+/** Position data */
+export interface Position {
+  /** X position inside parent */
+  x: number;
+  /** Y position inside parent */
+  y: number;
+}
+
 /** Fuel rod type infomation */
 export interface RodType {
   /** In-game item id */
@@ -40,35 +48,27 @@ export interface RodType {
 /**
  * Rod data
  */
-export interface Rod {
-  /**  cell */
-  x: number;
-  /** Y position inside cell */
-  y: number;
+export interface Rod extends Position {
   /** Container cell */
   cell: Cell;
   /** Fullname of the rod type */
-  type: string;
+  type: RodType;
   /** Current duablility. -1 for infinity. */
   duability: number;
 }
 
 /** Cell data */
-export interface Cell {
-  /** X position inside reactor */
-  x: number;
-  /** Y position inside reactor */
-  y: number;
+export interface Cell extends Position {
   /** Rods of this cell */
   rods: Rod[];
   /** Fluid used in this cell */
   fluid: string;
 }
 
-export type RodInputObjectRaw = Pick<Rod, 'type'> | Pick<Rod, 'type' | 'x' | 'y'>;
-export type RodInputObject = RodInputObjectRaw | (RodInputObjectRaw & Pick<Rod, 'duability'>);
+export type Maybe<T, U> = T | (T & U);
+export type RodInputObject = Maybe<Maybe<{ type: string | RodType }, Position>, Pick<Rod, 'duability'>>;
 export type RodInput = string | RodInputObject;
-export type CellInput = Exclude<Cell, 'rods'> & { rods: Array<RodInput> };
+export type CellInput = Omit<Cell, 'rods'> & { rods: Array<RodInput> };
 
 /** Configuration of simulation run */
 export interface Config {

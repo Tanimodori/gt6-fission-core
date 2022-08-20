@@ -1,4 +1,4 @@
-import { Config, CellInput, Rod, RodType, Cell } from 'src/types';
+import { Config, CellInput, Rod, RodType, Cell, Position } from 'src/types';
 import { DefaultRodTypesArray } from './rodTypes';
 
 /**
@@ -42,9 +42,31 @@ function initCells(cellsIn: CellInput[]) {
     const cellOut: Cell = { ...cellIn, rods: [] };
     for (let i = 0; i < cellIn.rods.length; ++i) {
       const rodIn = cellIn.rods[i];
-      const { x, y } = 'x' in rodIn ? rodIn : getDefaultPos(i);
-      const type = typeof rodIn === 'string' ? rodIn : rodIn.type;
-      const duability = getRodType(type).duability;
+      // position
+      let pos: Position;
+      if (typeof rodIn === 'string') {
+        pos = getDefaultPos(i);
+      } else {
+        pos = 'x' in rodIn ? rodIn : getDefaultPos(i);
+      }
+      const { x, y } = pos;
+      // type
+      let type: RodType;
+      if (typeof rodIn === 'string') {
+        type = getRodType(rodIn);
+      } else if (typeof rodIn.type === 'string') {
+        type = getRodType(rodIn.type);
+      } else {
+        type = { ...rodIn.type };
+      }
+      // duability
+      let duability: number;
+      if (typeof rodIn === 'string') {
+        duability = type.duability;
+      } else {
+        duability = 'duability' in rodIn ? rodIn.duability : type.duability;
+      }
+      // output
       const rodOut = { x, y, type, duability, cell: cellOut };
       cellOut.rods.push(rodOut);
     }

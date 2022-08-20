@@ -1,0 +1,20 @@
+{
+  "name": "@gt6fussion/core",
+  "version": "0.0.0",
+  "description": "Core simulation for GregTech 6",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/Tanimodori/gt6fussion-core"
+  },
+  "keywords": [
+    "GregTech6",
+    "fussion",
+    "simulator"
+  ],
+  "author": "Tanimodori",
+  "license": "MIT"
+}

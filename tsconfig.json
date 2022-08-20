@@ -2,14 +2,14 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "esnext",
+    "lib": ["esnext", "dom"],
     "sourceMap": true,
     "moduleResolution": "Node",
     "skipLibCheck": true,
     "strict": true,
     "isolatedModules": true,
-    "types": ["browser"],
-    "baseUrl": ".",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "."
   },
   "include": ["src/**/*.ts"]
 }

@@ -1,4 +1,4 @@
-import { Config, CellInput, Rod, RodType } from 'src/types';
+import { Config, CellInput, Rod, RodType, Cell } from 'src/types';
 
 function getRodType(type: string, types?: RodType[]) {
   // TODO
@@ -14,20 +14,23 @@ function getDefaultPos(index: number) {
   return { x, y };
 }
 
-function initRods(cells: CellInput[]) {
-  const rods: Rod[] = [];
-  for (const cell of cells) {
-    for (let i = 0; i < cell.rods.length; ++i) {
-      const rodInput = cell.rods[i];
-      const { x, y } = 'x' in rodInput ? rodInput : getDefaultPos(i);
-      const type = typeof rodInput === 'string' ? rodInput : rodInput.type;
+function initCells(cellsIn: CellInput[]) {
+  const cellsOut: Cell[] = [];
+  for (const cellIn of cellsIn) {
+    const cellOut: Cell = { ...cellIn, rods: [] };
+    for (let i = 0; i < cellIn.rods.length; ++i) {
+      const rodIn = cellIn.rods[i];
+      const { x, y } = 'x' in rodIn ? rodIn : getDefaultPos(i);
+      const type = typeof rodIn === 'string' ? rodIn : rodIn.type;
       const duability = getRodType(type);
-      rods.push({ x, y, type, duability, cell });
+      const rodOut = { x, y, type, duability, cell: cellOut };
+      cellOut.rods.push(rodOut);
     }
   }
-  return rods;
+  return cellsOut;
 }
 
 export function simulate(config: Config) {
-  const rods = initRods(config.cells);
+  const cells = initCells(config.cells);
+  const rods = cells.flatMap((x) => x.rods);
 }

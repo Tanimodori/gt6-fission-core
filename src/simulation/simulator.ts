@@ -27,7 +27,7 @@ export function getDefaultPos(index: number) {
     throw new Error(`Default pos of rod[${index}]is out of range [0,3]`);
   }
   const x = index % 2;
-  const y = index - 2 * x;
+  const y = index > 1 ? 1 : 0;
   return { x, y };
 }
 
@@ -70,6 +70,7 @@ export function initCells(cellsIn: CellInput[]) {
       const rodOut = { x, y, type, duability, cell: cellOut };
       cellOut.rods.push(rodOut);
     }
+    cellsOut.push(cellOut);
   }
   return cellsOut;
 }

@@ -24,7 +24,7 @@ describe('Simulator init function', () => {
     expect(cell.rods[1]).toMatchObject({ ...rodExpected, x: 1, ...extras[1] });
   };
 
-  const basicCell = { x: 0, y: 0, fluid: 'Water' };
+  const basicCell = { x: 0, y: 0, fluid: 'Water', type: '2x2' as const };
 
   it('Should accept rods input as string', () => {
     const cellIn: CellInput = { ...basicCell, rods: [U235.fullname, U235.fullname] };

@@ -57,8 +57,13 @@ export interface Rod extends Position {
   duability: number;
 }
 
+/** Cell type */
+export type CellType = '1x1' | '2x2';
+
 /** Cell data */
 export interface Cell extends Position {
+  /** type of this cell */
+  type: CellType;
   /** Rods of this cell */
   rods: Rod[];
   /** Fluid used in this cell */

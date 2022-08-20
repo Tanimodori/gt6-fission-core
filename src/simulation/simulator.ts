@@ -75,11 +75,45 @@ export function initCells(cellsIn: CellInput[]) {
   return cellsOut;
 }
 
+/** Return pos string like `x1,y1,x2,y2,...` as id */
+export function posToString(...positions: Position[]) {
+  return positions.map((pos) => `${pos.x},${pos.y}`).join(',');
+}
+
+/** Edge of two cells */
+export type CellEdge = [Cell, Cell];
+
+/**
+ * Find edge of cells
+ * @param cells cells input
+ */
+export function findCellEdges(cells: Cell[]): CellEdge[] {
+  const cellMap: Map<string, Cell> = new Map();
+  cells.forEach((cell) => cellMap.set(posToString(cell), cell));
+  const result: CellEdge[] = [];
+  cells.forEach((cell) => {
+    // search only right and down side
+    // to avoid redundant edges
+    const dArr = [
+      [1, 0],
+      [0, 1],
+    ];
+    for (const [dx, dy] of dArr) {
+      const adjCell = cellMap.get(posToString({ x: cell.x + dx, y: cell.y + dy }));
+      if (adjCell) {
+        result.push([cell, adjCell]);
+      }
+    }
+  });
+  return result;
+}
+
 /**
  * Run the simulation.
  * @param config simulation configuration
  */
 export function simulate(config: Config) {
+  // Sanitize cells & rods input
   const cells = initCells(config.cells);
   const rods = cells.flatMap((x) => x.rods);
 }

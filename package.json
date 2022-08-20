@@ -1,5 +1,5 @@
 {
-  "name": "@gt6fussion/core",
+  "name": "@gt6fission/core",
   "version": "0.0.0",
   "description": "Core simulation for GregTech 6",
   "type": "module",
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/Tanimodori/gt6fussion-core"
+    "url": "github.com/Tanimodori/gt6fission-core"
   },
   "keywords": [
     "GregTech6",

@@ -1,4 +1,4 @@
-import { Config, CellInput, Rod, RodType, Cell, Position } from 'src/types';
+import { Config, CellInput, Rod, RodType, Cell, Position, CellType } from 'src/types';
 import { DefaultRodTypesArray } from './rodTypes';
 
 /**
@@ -82,14 +82,18 @@ export function posToString(...positions: Position[]) {
 
 /** Edge of two cells */
 export type CellEdge = [Cell, Cell];
+/** Edge of two rods */
+export type RodEdge = [Rod, Rod];
 
 /**
- * Find edge of cells
+ * Find edges of cells
  * @param cells cells input
  */
 export function findCellEdges(cells: Cell[]): CellEdge[] {
+  // cellMap
   const cellMap: Map<string, Cell> = new Map();
   cells.forEach((cell) => cellMap.set(posToString(cell), cell));
+  // compute result
   const result: CellEdge[] = [];
   cells.forEach((cell) => {
     // search only right and down side
@@ -109,11 +113,103 @@ export function findCellEdges(cells: Cell[]): CellEdge[] {
 }
 
 /**
+ * Get the cell boundary rod positions
+ * @param cellType type of cell
+ * @param posDiff the adjacent cell position different to this cell
+ */
+export function getCellBoundaryRodPos(cellType: CellType, posDiff: Position): Position[] {
+  if (cellType === '1x1') {
+    return [{ x: 0, y: 0 }];
+  } else if (posDiff.x === -1 && posDiff.y === 0) {
+    // left
+    return [
+      { x: 0, y: 0 },
+      { x: 0, y: 1 },
+    ];
+  } else if (posDiff.x === 1 && posDiff.y === 0) {
+    // right
+    return [
+      { x: 1, y: 0 },
+      { x: 1, y: 1 },
+    ];
+  } else if (posDiff.x === 0 && posDiff.y === -1) {
+    // up
+    return [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+    ];
+  } else if (posDiff.x === 0 && posDiff.y === 1) {
+    // down
+    return [
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+    ];
+  } else {
+    throw new Error(`Position diff (${posDiff.x},${posDiff.y}) is not valid`);
+  }
+}
+
+/**
+ * Find edges of rods
+ * @param cells cells input
+ * @param cellEdges cell edges input
+ */
+export function findRodEdges(cells: Cell[], cellEdges: CellEdge[]): RodEdge[] {
+  // rodMap
+  const rodMap: Map<string, Rod> = new Map();
+  const rods = cells.flatMap((x) => x.rods);
+  rods.forEach((x) => rodMap.set(posToString(x.cell, x), x));
+  // compute result
+  const result: RodEdge[] = [];
+  /** Try to add edge from (cellA,rodA) to (cellB,rodB) if both rods exist */
+  const tryAddEdge = (cellAPos: Position, rodAPos: Position, cellBPos: Position, rodBPos: Position) => {
+    const currentRod = [rodMap.get(posToString(cellAPos, rodAPos)), rodMap.get(posToString(cellBPos, rodBPos))];
+    if (currentRod[0] && currentRod[1]) {
+      result.push([currentRod[0], currentRod[1]]);
+    }
+  };
+  // rod edges within same cells
+  cells.forEach((cell) => {
+    const rodPos: Position[] = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+    ];
+    const possibleEdges: Array<[Position, Position]> = [
+      [rodPos[0], rodPos[1]],
+      [rodPos[2], rodPos[3]],
+      [rodPos[0], rodPos[2]],
+      [rodPos[1], rodPos[3]],
+    ];
+    possibleEdges.forEach((possibleEdge) => {
+      tryAddEdge(cell, possibleEdge[0], cell, possibleEdge[1]);
+    });
+  });
+  // rod edges between adjacent cells
+  cellEdges.forEach((cellEdge) => {
+    const posDiff = { x: cellEdge[1].x - cellEdge[0].x, y: cellEdge[1].y - cellEdge[0].y };
+    const boundaryRodPos = [
+      getCellBoundaryRodPos(cellEdge[0].type, posDiff),
+      getCellBoundaryRodPos(cellEdge[1].type, { x: -posDiff.x, y: -posDiff.y }),
+    ];
+    const lengths = [boundaryRodPos[0].length, boundaryRodPos[1].length];
+    const maxLength = Math.max(...lengths);
+    for (let i = 0; i < maxLength; ++i) {
+      const currentRodPos = [boundaryRodPos[0][i % lengths[0]], boundaryRodPos[1][i % lengths[1]]];
+      tryAddEdge(cellEdge[0], currentRodPos[0], cellEdge[1], currentRodPos[1]);
+    }
+  });
+  return result;
+}
+
+/**
  * Run the simulation.
  * @param config simulation configuration
  */
 export function simulate(config: Config) {
   // Sanitize cells & rods input
   const cells = initCells(config.cells);
-  const rods = cells.flatMap((x) => x.rods);
+  const cellEdges = findCellEdges(cells);
+  const rodEdges = findRodEdges(cells, cellEdges);
 }

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { DefaultRodTypes } from 'src/simulation/rodTypes';
-import { initCells, posToString } from 'src/simulation/simulator';
+import { CellEdge, findCellEdges, initCells, posToString } from 'src/simulation/simulator';
 import { Cell, CellInput, Rod } from 'src/types';
 
 const U235 = DefaultRodTypes.Uranium235;
@@ -53,5 +53,38 @@ describe('simulator posToString function', () => {
   it('should accept multiple pos', () => {
     const pos = { x: 1, y: 2 };
     expect(posToString(pos, pos)).toBe('1,2,1,2');
+  });
+});
+
+describe('simulator findCellEdges function', () => {
+  it('should find edges correctly', () => {
+    const basicCell = { x: 1, y: 1, rods: [], fluid: 'Water', type: '2x2' as const };
+    const cells: Cell[] = [
+      { ...basicCell },
+      { ...basicCell, x: 0 },
+      { ...basicCell, x: 2 },
+      { ...basicCell, y: 0 },
+      { ...basicCell, y: 2 },
+      { ...basicCell, x: 3, y: 2 },
+    ];
+    const edgesExpected: CellEdge[] = [
+      [cells[1], cells[0]],
+      [cells[0], cells[2]],
+      [cells[3], cells[0]],
+      [cells[0], cells[4]],
+    ];
+    const edges = findCellEdges(cells);
+    const sortFn = (a: CellEdge, b: CellEdge) => {
+      if (a[0].x !== b[0].x) {
+        return a[0].x - b[0].x;
+      } else if (a[0].y !== b[0].y) {
+        return a[0].y - b[0].y;
+      } else if (a[1].x !== b[1].x) {
+        return a[1].x - b[1].x;
+      } else {
+        return a[1].y - b[1].y;
+      }
+    };
+    expect(edges.sort(sortFn)).toStrictEqual(edgesExpected.sort(sortFn));
   });
 });

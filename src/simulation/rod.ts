@@ -1,7 +1,7 @@
 import { Maybe, Position } from 'src/types';
 import Cell from './cell';
 import RodType from './rodType';
-import RodTypeRegistry, { RodTypeInput } from './rodTypeRegistry';
+import { RodTypeInput } from './rodTypeRegistry';
 
 export type RodInput = string | number | Maybe<{ type: RodTypeInput; duability?: number }, Position>;
 
@@ -10,13 +10,13 @@ export type RodInput = string | number | Maybe<{ type: RodTypeInput; duability?:
  */
 export default class Rod {
   /** Container cell */
-  cell?: Cell;
+  cell: Cell;
   /** Fullname of the rod type */
-  type!: RodType;
+  type: RodType;
   /** X position inside parent */
-  x?: number;
+  x!: number;
   /** Y position inside parent */
-  y?: number;
+  y!: number;
   /** Initial Duability */
   initialDuability?: number;
 
@@ -25,17 +25,20 @@ export default class Rod {
    * @param input the input
    * @param registry rod type registry
    */
-  constructor(input: RodInput, registry = RodTypeRegistry.defaultRegistry) {
+  constructor(input: RodInput, cell: Cell) {
+    this.cell = cell;
     let type: RodTypeInput;
     if (typeof input === 'object') {
       // object type
       type = input.type;
       // pos
-      if ('x' in input) {
+      if ('x' in input && 'y' in input) {
         this.x = input.x;
-      }
-      if ('y' in input) {
         this.y = input.y;
+      } else {
+        const { x, y } = cell.getNextPos();
+        this.x = x;
+        this.y = y;
       }
       if ('duability' in input) {
         this.initialDuability = input.duability;
@@ -45,6 +48,6 @@ export default class Rod {
       type = input;
     }
     // type
-    this.type = registry.parse(type);
+    this.type = cell.reactor.registry.parse(type);
   }
 }

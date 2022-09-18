@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { CellEdge, findCellEdges, findRodEdges, initCells, posToString, RodEdge } from 'src/simulation/simulator';
+import { CellEdge, findCellEdges, findRodEdges, initCells, posToString, RodEdge } from 'src/simulation/legacy';
 import { Position } from 'src/types';
 import RodTypeRegistry from 'src/simulation/rodTypeRegistry';
 import Cell, { CellInput } from 'src/simulation/cell';

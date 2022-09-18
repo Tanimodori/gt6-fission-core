@@ -72,6 +72,10 @@ export default class Cell {
       return { x, y };
     }
   }
+  /** Check if pos is valid in this cell */
+  isPosValid(pos: Position) {
+    return pos.x >= 0 && pos.x < this.sideLength && pos.y >= 0 && pos.y < this.sideLength;
+  }
 
   /** Find rod at position */
   findRod(pos: Position): Rod | null {

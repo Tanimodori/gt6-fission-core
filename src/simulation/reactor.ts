@@ -2,7 +2,9 @@ import { Position } from 'src/types';
 import Cell, { CellInput } from './cell';
 import RodTypeRegistry from './rodTypeRegistry';
 
+/** Configuration of reactor */
 export interface ReactorInput {
+  /** Cells in the reactor */
   cells: CellInput[];
 }
 

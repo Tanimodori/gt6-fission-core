@@ -1,20 +1,8 @@
-import { Config, CellInput, Rod, Cell, Position, CellType } from 'src/types';
+import { Position } from 'src/types';
+import Cell, { CellInput, CellType } from './cell';
+import { Reactor, ReactorInput } from './reactor';
+import Rod from './rod';
 import RodType from './rodType';
-
-/**
- * Get the rod type data by name.
- * @param fullname the fullname name of rod type
- * @param types a list of available rod types if provided
- * @returns the rod type with matched name
- */
-export function getRodType(fullname: string, types?: RodType[]) {
-  types = types ?? RodType.getDefaults();
-  const type = types.find((x) => x.fullname === fullname);
-  if (!type) {
-    throw new Error(`Cannot find rod type with fullname ${fullname}`);
-  }
-  return type;
-}
 
 /**
  * Get the default position of rod by index.
@@ -35,46 +23,12 @@ export function getDefaultPos(index: number) {
  * Sanitize cell data before simulation
  * @param cellsIn input cell data
  * @returns cell data sanitized
+ * @deprecated Use {@link Reactor}
  */
 export function initCells(cellsIn: CellInput[]) {
-  const cellsOut: Cell[] = [];
-  for (const cellIn of cellsIn) {
-    const cellOut: Cell = { ...cellIn, rods: [] };
-    for (let i = 0; i < cellIn.rods.length; ++i) {
-      const rodIn = cellIn.rods[i];
-      // position
-      let pos: Position;
-      if (typeof rodIn === 'string') {
-        pos = getDefaultPos(i);
-      } else {
-        pos = 'x' in rodIn ? rodIn : getDefaultPos(i);
-      }
-      const { x, y } = pos;
-      // type
-      let type: RodType;
-      if (typeof rodIn === 'string') {
-        type = getRodType(rodIn);
-      } else if (typeof rodIn.type === 'string') {
-        type = getRodType(rodIn.type);
-      } else {
-        type = rodIn.type;
-      }
-      // duability
-      let duability: number;
-      if (typeof rodIn === 'string') {
-        duability = type.duability;
-      } else {
-        duability = 'duability' in rodIn ? rodIn.duability : type.duability;
-      }
-      // output
-      const rodOut = { x, y, type, duability, cell: cellOut };
-      cellOut.rods.push(rodOut);
-    }
-    cellsOut.push(cellOut);
-  }
-  return cellsOut;
+  const reactor = new Reactor({ cells: cellsIn });
+  return reactor.cells;
 }
-
 /** Return pos string like `x1,y1,x2,y2,...` as id */
 export function posToString(...positions: Position[]) {
   return positions.map((pos) => `${pos.x},${pos.y}`).join(',');
@@ -207,9 +161,10 @@ export function findRodEdges(cells: Cell[], cellEdges: CellEdge[]): RodEdge[] {
  * Run the simulation.
  * @param config simulation configuration
  */
-export function simulate(config: Config) {
+export function simulate(config: ReactorInput) {
   // Sanitize cells & rods input
-  const cells = initCells(config.cells);
+  const reactor = new Reactor(config);
+  const cells = reactor.cells;
   const cellEdges = findCellEdges(cells);
   const rodEdges = findRodEdges(cells, cellEdges);
 }

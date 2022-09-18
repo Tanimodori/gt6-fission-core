@@ -34,4 +34,9 @@ export class Reactor {
       return { x: x + 1, y };
     }
   }
+
+  /** Find cell at position */
+  findCell(pos: Position): Cell | null {
+    return this.cells.find((cell) => cell.x === pos.x && cell.y === pos.y) ?? null;
+  }
 }

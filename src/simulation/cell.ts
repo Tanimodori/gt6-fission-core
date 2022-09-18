@@ -72,4 +72,9 @@ export default class Cell {
       return { x, y };
     }
   }
+
+  /** Find rod at position */
+  findRod(pos: Position): Rod | null {
+    return this.rods.find((rod) => rod.x === pos.x && rod.y === pos.y) ?? null;
+  }
 }

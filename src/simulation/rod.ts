@@ -3,11 +3,10 @@ import Cell from './cell';
 import RodType from './rodType';
 import { RodTypeInput } from './rodTypeRegistry';
 
+/** Fuel rod init config */
 export type RodInput = string | number | Maybe<{ type: RodTypeInput; duability?: number }, Position>;
 
-/**
- * Fuel rod class
- */
+/** Fuel rod class */
 export default class Rod {
   /** Container cell */
   cell: Cell;

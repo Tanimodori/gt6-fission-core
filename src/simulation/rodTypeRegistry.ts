@@ -4,20 +4,20 @@ export type RodTypeInput = RodTypeInfo | string | number;
 
 export default class RodTypeRegistry {
   /** Default type cache */
-  static _defaults: RodType[] | undefined;
+  static _default: RodTypeRegistry | undefined;
 
-  /** Get default rod types */
-  static get defaults(): RodType[] {
-    if (!RodTypeRegistry._defaults) {
-      RodTypeRegistry._defaults = defaultRodTypeInfos.map((x) => new RodType(x));
+  /** Get default rod registry */
+  static get defaultRegistry(): RodTypeRegistry {
+    if (!RodTypeRegistry._default) {
+      RodTypeRegistry._default = new RodTypeRegistry(defaultRodTypeInfos.map((x) => new RodType(x)));
     }
-    return RodTypeRegistry._defaults;
+    return RodTypeRegistry._default;
   }
 
   _types: RodType[];
 
   constructor(types?: RodType[]) {
-    this._types = types ?? RodTypeRegistry.defaults;
+    this._types = types ?? [...RodTypeRegistry.defaultRegistry.types];
   }
 
   get types(): readonly RodType[] {

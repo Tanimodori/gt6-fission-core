@@ -12,7 +12,7 @@ export default class Rod {
   /** Container cell */
   cell?: Cell;
   /** Fullname of the rod type */
-  type: RodType;
+  type!: RodType;
   /** X position inside parent */
   x?: number;
   /** Y position inside parent */
@@ -35,7 +35,7 @@ export default class Rod {
         this.x = input.x;
       }
       if ('y' in input) {
-        this.x = input.y;
+        this.y = input.y;
       }
       if ('duability' in input) {
         this.initialDuability = input.duability;

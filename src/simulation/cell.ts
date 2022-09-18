@@ -77,4 +77,34 @@ export default class Cell {
   findRod(pos: Position): Rod | null {
     return this.rods.find((rod) => rod.x === pos.x && rod.y === pos.y) ?? null;
   }
+
+  _adjacentCells?: Cell[];
+  _computeAdjacentCells() {
+    this._adjacentCells = [];
+    const dArr = [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ];
+    for (const [dx, dy] of dArr) {
+      const adjCell = this.reactor.findCell({ x: this.x + dx, y: this.y + dy });
+      if (adjCell) {
+        this._adjacentCells.push(adjCell);
+      }
+    }
+  }
+  /**
+   * Get adjacent cells.
+   * @param cached use last result or not
+   * @returns adjacent cells
+   */
+  getAdjacentCells(cached = false): Cell[] {
+    if (cached && this._adjacentCells) {
+      return this._adjacentCells;
+    } else {
+      this._computeAdjacentCells();
+      return this._adjacentCells as Cell[];
+    }
+  }
 }

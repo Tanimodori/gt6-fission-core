@@ -51,8 +51,21 @@ export default class Rod {
   }
 
   _adjacentRods?: Rod[];
-  _computeAdjacentRods(cached = false) {
-    this._adjacentRods = [];
+  _computeSelfAdjacentRods() {
+    if (this.cell.type === '2x2') {
+      const possiblePos: Position[] = [
+        { x: 1 - this.x, y: this.y },
+        { x: this.x, y: 1 - this.y },
+      ];
+      for (const pos of possiblePos) {
+        const found = this.cell.findRod(pos);
+        if (found) {
+          this._adjacentRods?.push(found);
+        }
+      }
+    }
+  }
+  _computeOtherAdjacentRods(cached = false) {
     const adjacentCells = this.cell.getAdjacentCells(cached);
     for (const adjCell of adjacentCells) {
       // 1. setup current pos
@@ -90,6 +103,11 @@ export default class Rod {
         }
       });
     }
+  }
+  _computeAdjacentRods(cached = false) {
+    this._adjacentRods = [];
+    this._computeSelfAdjacentRods();
+    this._computeOtherAdjacentRods(cached);
   }
   /**
    * Get adjacent rods.

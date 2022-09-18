@@ -1,5 +1,48 @@
-export const DefaultRodTypes = {
-  Empty: {
+/** Fuel rod type infomation */
+export interface RodTypeInfo {
+  /** In-game item id */
+  id: number;
+  /**
+   * Full name used in translation key
+   * @example Uranium235
+   */
+  fullname: string;
+  /**
+   * Abbreviation of base material/element name,
+   * use with superscript
+   * @example U
+   */
+  basename: string;
+  /**
+   * Superscript of base material/element name,
+   * use with basename
+   * @example 235
+   */
+  superscript: string;
+  /**
+   * Color of rod in the form of `#\d{6}`
+   */
+  color: string;
+  /**
+   * Maxinum duablility. -1 for infinity.
+   */
+  duability: number;
+  /**
+   * Emssion to self per second.
+   */
+  emissionSelf: number;
+  /**
+   * Emission to adjacent rods per second
+   */
+  emissionOthers: number;
+  /**
+   * Factor to divide on emission.
+   */
+  factor: number;
+}
+
+export const defaultRodTypeInfos: RodTypeInfo[] = [
+  {
     id: 9201,
     fullname: 'Empty',
     basename: '?',
@@ -10,7 +53,7 @@ export const DefaultRodTypes = {
     emissionOthers: 0,
     factor: Infinity,
   },
-  NeutronAbsorber: {
+  {
     id: 9202,
     fullname: 'NeutronAbsorber',
     basename: 'n',
@@ -21,7 +64,7 @@ export const DefaultRodTypes = {
     emissionOthers: 0,
     factor: Infinity,
   },
-  NeutronReflector: {
+  {
     id: 9203,
     fullname: 'NeutronReflector',
     basename: 'n',
@@ -32,7 +75,7 @@ export const DefaultRodTypes = {
     emissionOthers: 0,
     factor: Infinity,
   },
-  Thorium230: {
+  {
     id: 9210,
     fullname: 'Thorium230',
     basename: 'Th',
@@ -43,7 +86,7 @@ export const DefaultRodTypes = {
     emissionOthers: 8,
     factor: 64,
   },
-  Uranium238: {
+  {
     id: 9220,
     fullname: 'Uranium238',
     basename: 'U',
@@ -54,7 +97,7 @@ export const DefaultRodTypes = {
     emissionOthers: 16,
     factor: 32,
   },
-  Uranium235: {
+  {
     id: 9221,
     fullname: 'Uranium235',
     basename: 'U',
@@ -65,7 +108,7 @@ export const DefaultRodTypes = {
     emissionOthers: 128,
     factor: 8,
   },
-  Plutonium244: {
+  {
     id: 9230,
     fullname: 'Plutonium244',
     basename: 'Pu',
@@ -76,7 +119,7 @@ export const DefaultRodTypes = {
     emissionOthers: 256,
     factor: 8,
   },
-  Plutonium241: {
+  {
     id: 9231,
     fullname: 'Plutonium241',
     basename: 'Pu',
@@ -87,7 +130,7 @@ export const DefaultRodTypes = {
     emissionOthers: 512,
     factor: 6,
   },
-  Plutonium243: {
+  {
     id: 9232,
     fullname: 'Plutonium243',
     basename: 'Pu',
@@ -98,7 +141,7 @@ export const DefaultRodTypes = {
     emissionOthers: 512,
     factor: 6,
   },
-  Americium245: {
+  {
     id: 9240,
     fullname: 'Americium245',
     basename: 'Am',
@@ -109,7 +152,7 @@ export const DefaultRodTypes = {
     emissionOthers: 256,
     factor: 8,
   },
-  Americium241: {
+  {
     id: 9241,
     fullname: 'Americium241',
     basename: 'Am',
@@ -120,7 +163,7 @@ export const DefaultRodTypes = {
     emissionOthers: 512,
     factor: 6,
   },
-  Cobalt60: {
+  {
     id: 9250,
     fullname: 'Cobalt60',
     basename: 'Co',
@@ -131,7 +174,7 @@ export const DefaultRodTypes = {
     emissionOthers: 8,
     factor: 32,
   },
-  EnrichedNaquadah: {
+  {
     id: 9260,
     fullname: 'EnrichedNaquadah',
     basename: 'Nq',
@@ -142,7 +185,7 @@ export const DefaultRodTypes = {
     emissionOthers: 512,
     factor: 8,
   },
-  Naquadria: {
+  {
     id: 9261,
     fullname: 'Naquadria',
     basename: 'Nq',
@@ -153,6 +196,4 @@ export const DefaultRodTypes = {
     emissionOthers: 2048,
     factor: 6,
   },
-} as const;
-
-export const DefaultRodTypesArray = Object.values(DefaultRodTypes);
+];

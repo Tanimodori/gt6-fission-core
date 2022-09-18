@@ -1,10 +1,13 @@
 import { describe, it, expect } from 'vitest';
 
-import { DefaultRodTypes } from 'src/simulation/rodTypes';
 import { CellEdge, findCellEdges, findRodEdges, initCells, posToString, RodEdge } from 'src/simulation/simulator';
 import { Cell, CellInput, Position, Rod } from 'src/types';
+import RodType from 'src/simulation/rodType';
 
-const U235 = DefaultRodTypes.Uranium235;
+const U235 = RodType.getDefaults().find((x) => x.fullname === 'Uranium235');
+if (!U235) {
+  throw new Error('U235 rod type not exist');
+}
 
 describe('simulator init function', () => {
   /**

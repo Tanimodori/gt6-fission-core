@@ -1,39 +1,28 @@
-import { defaultRodTypeInfos, RodTypeInfo } from './defaults';
+export * from './defaults';
 
-/** Fuel rod type class */
-export default class RodType {
-  /** Default type cache */
-  static _defaults: RodType[] | undefined;
-
-  /** Get default rod types */
-  static getDefaults(): RodType[] {
-    if (!RodType._defaults) {
-      RodType._defaults = defaultRodTypeInfos.map((x) => new RodType(x));
-    }
-    return RodType._defaults;
-  }
-
-  /** In-game item id. */
+/** Fuel rod type infomation */
+export interface RodTypeInfo {
+  /** In-game item id */
   id: number;
   /**
    * Full name used in translation key
-   * @example Uranium235.
+   * @example Uranium235
    */
   fullname: string;
   /**
    * Abbreviation of base material/element name,
-   * use with superscript.
+   * use with superscript
    * @example U
    */
   basename: string;
   /**
    * Superscript of base material/element name,
-   * use with basename.
+   * use with basename
    * @example 235
    */
   superscript: string;
   /**
-   * Color of rod in the form of `#\d{6}`.
+   * Color of rod in the form of `#\d{6}`
    */
   color: string;
   /**
@@ -45,28 +34,86 @@ export default class RodType {
    */
   emissionSelf: number;
   /**
-   * Emission to adjacent rods per second.
+   * Emission to adjacent rods per second
    */
   emissionOthers: number;
   /**
    * Factor to divide on emission.
    */
   factor: number;
+}
+
+/** Fuel rod type class */
+export default class RodType {
+  /** In-game item id. */
+  id!: number;
+  /**
+   * Full name used in translation key
+   * @example Uranium235.
+   */
+  fullname!: string;
+  /**
+   * Abbreviation of base material/element name,
+   * use with superscript.
+   * @example U
+   */
+  basename!: string;
+  /**
+   * Superscript of base material/element name,
+   * use with basename.
+   * @example 235
+   */
+  superscript!: string;
+  /**
+   * Color of rod in the form of `#\d{6}`.
+   */
+  color!: string;
+  /**
+   * Maxinum duablility. -1 for infinity.
+   */
+  duability!: number;
+  /**
+   * Emssion to self per second.
+   */
+  emissionSelf!: number;
+  /**
+   * Emission to adjacent rods per second.
+   */
+  emissionOthers!: number;
+  /**
+   * Factor to divide on emission.
+   */
+  factor!: number;
 
   /**
-   * construct a new rod type
+   * Construct a new rod type
    * @param info the rod type info
    */
   constructor(info: RodTypeInfo) {
-    this.id = info.id;
-    this.fullname = info.fullname;
-    this.basename = info.basename;
-    this.superscript = info.superscript;
-    this.color = info.color;
-    this.duability = info.duability;
-    this.emissionSelf = info.emissionSelf;
-    this.emissionOthers = info.emissionOthers;
-    this.factor = info.factor;
+    this.update(info);
+  }
+
+  /**
+   * Update rod type info
+   * @param info the rod type info
+   */
+  update(info: Partial<RodTypeInfo>) {
+    const keys = [
+      'id',
+      'fullname',
+      'basename',
+      'superscript',
+      'color',
+      'duability',
+      'emissionSelf',
+      'emissionOthers',
+      'factor',
+    ] as const;
+    for (const field of keys) {
+      if (field in info) {
+        (this[field] as unknown) = info[field];
+      }
+    }
   }
 
   /**

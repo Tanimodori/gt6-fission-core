@@ -112,7 +112,7 @@ export default class Cell {
   /**
    * Clear adjacent rods cache
    */
-  getAdjacentCellsCache() {
+  clearAdjacentCellsCache() {
     this._adjacentCells = [];
   }
 

@@ -13,8 +13,11 @@ describe('RodTypeRegistry.defaultRegistry', () => {
   });
 
   it('Can query rod types', () => {
-    const testRodType = RodType.defaultRodTypes[0];
     const registry = RodTypeRegistry.defaultRegistry;
-    expect(registry.get(testRodType.fullname)).toBe(testRodType);
+    const rodType = registry.types[0];
+    expect(registry.get(rodType.fullname)).toBe(rodType);
+    expect(registry.get(rodType.id)).toBe(rodType);
+    expect(registry.get('NotExistRodType')).toBe(null);
+    expect(registry.get(-1)).toBe(null);
   });
 });

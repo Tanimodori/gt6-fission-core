@@ -4,10 +4,10 @@ export type RodTypeInput = RodTypeInfo | string | number;
 
 export default class RodTypeRegistry {
   /** Default type cache */
-  static _default: RodTypeRegistry | undefined;
+  static _default?: RodTypeRegistry;
 
   /** Get default rod registry */
-  static get defaultRegistry(): RodTypeRegistry {
+  static get defaultRegistry() {
     if (!RodTypeRegistry._default) {
       RodTypeRegistry._default = new RodTypeRegistry([...RodType.defaultRodTypes]);
     }

@@ -1,3 +1,5 @@
+import { defaultRodTypeInfos } from './defaults';
+
 export * from './defaults';
 
 /** Fuel rod type infomation */
@@ -84,6 +86,14 @@ export default class RodType {
    * Factor to divide on emission.
    */
   factor!: number;
+
+  static _defaults?: RodType[];
+  static get defaultRodTypes() {
+    if (!RodType._defaults) {
+      RodType._defaults = defaultRodTypeInfos.map((x) => new RodType(x));
+    }
+    return RodType._defaults;
+  }
 
   /**
    * Construct a new rod type

@@ -1,3 +1,5 @@
+import { RodTypeInfo } from '.';
+
 export const defaultRodTypeInfos: RodTypeInfo[] = [
   {
     id: 9201,

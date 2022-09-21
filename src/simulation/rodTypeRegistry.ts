@@ -1,4 +1,4 @@
-import RodType, { defaultRodTypeInfos, RodTypeInfo } from './rodType';
+import RodType, { RodTypeInfo } from './rodType';
 
 export type RodTypeInput = RodTypeInfo | string | number;
 
@@ -9,7 +9,7 @@ export default class RodTypeRegistry {
   /** Get default rod registry */
   static get defaultRegistry(): RodTypeRegistry {
     if (!RodTypeRegistry._default) {
-      RodTypeRegistry._default = new RodTypeRegistry(defaultRodTypeInfos.map((x) => new RodType(x)));
+      RodTypeRegistry._default = new RodTypeRegistry([...RodType.defaultRodTypes]);
     }
     return RodTypeRegistry._default;
   }

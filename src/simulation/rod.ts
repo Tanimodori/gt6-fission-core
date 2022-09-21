@@ -51,57 +51,41 @@ export default class Rod {
   }
 
   _adjacentRods?: Rod[];
+
   _computeSelfAdjacentRods() {
     if (this.cell.type === '2x2') {
       const possiblePos: Position[] = [
         { x: 1 - this.x, y: this.y },
         { x: this.x, y: 1 - this.y },
       ];
-      for (const pos of possiblePos) {
+      const _tryPushAdjacentRod = (pos: Position) => {
         const found = this.cell.findRod(pos);
-        if (found) {
-          this._adjacentRods?.push(found);
-        }
-      }
+        found && this._adjacentRods?.push(found);
+      };
+      possiblePos.forEach(_tryPushAdjacentRod);
     }
   }
   _computeOtherAdjacentRods(cached = false) {
     const adjacentCells = this.cell.getAdjacentCells(cached);
     for (const adjCell of adjacentCells) {
-      // 1. setup current pos
-      const allPos = [
-        { x: 0, y: 0 },
-        { x: 1, y: 0 },
-        { x: 0, y: 1 },
-        { x: 1, y: 1 },
-      ];
-      const currentPos: Position[] = this.cell.type === '1x1' ? allPos : [{ x: this.x, y: this.y }];
-      // 2. compute diff
+      // 1. Ensure this rod is on the edge
       const posDiff = { x: adjCell.x - this.x, y: adjCell.y - this.y };
-      // 3. advance diff & filter pos
-      let filteredPos: Position[] = [];
-      currentPos.forEach((pos) => {
-        pos.x += posDiff.x;
-        pos.y += posDiff.y;
-        if (pos.x < 0 || pos.x >= 2) {
-          pos.x = (pos.x + 2) % 2;
-          filteredPos.push(pos);
-        } else if (pos.y < 0 || pos.y >= 2) {
-          pos.y = (pos.y + 2) % 2;
-          filteredPos.push(pos);
-        }
-      });
-      // 4. shim pos
-      if (adjCell.type === '1x1' && filteredPos.length > 0) {
-        filteredPos = [{ x: 0, y: 0 }];
+      const thisEdgeRods = this.cell.getEgdeRods(posDiff);
+      if (thisEdgeRods.indexOf(this) === -1) {
+        continue;
       }
-      // 5. push results
-      filteredPos.forEach((pos) => {
-        const found = adjCell.findRod(pos);
-        if (found) {
-          this._adjacentRods?.push(found);
+      // 2. Get edge rods of that rod
+      const thatEdgeRods = adjCell.getEgdeRods({ x: -posDiff.x, y: -posDiff.y });
+      // 3. Get the max common side length
+      const maxLength = Math.max(thisEdgeRods.length, thatEdgeRods.length);
+      // 4. iterate and add
+      for (let i = 0; i < maxLength; ++i) {
+        const thisEdgeRod = thisEdgeRods[i % thisEdgeRods.length];
+        const thatEdgeRod = thatEdgeRods[i % thatEdgeRods.length];
+        if (thisEdgeRod === this && thatEdgeRod) {
+          this._adjacentRods?.push(thatEdgeRod);
         }
-      });
+      }
     }
   }
   _computeAdjacentRods(cached = false) {
@@ -125,5 +109,12 @@ export default class Rod {
       this._computeAdjacentRods(cached);
       return this._adjacentRods as Rod[];
     }
+  }
+
+  /**
+   * Clear adjacent rods cache
+   */
+  clearAdjacentRodsCache() {
+    this._adjacentRods = [];
   }
 }

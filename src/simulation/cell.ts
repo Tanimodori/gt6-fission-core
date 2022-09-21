@@ -85,18 +85,16 @@ export default class Cell {
   _adjacentCells?: Cell[];
   _computeAdjacentCells() {
     this._adjacentCells = [];
-    const dArr = [
-      [1, 0],
-      [-1, 0],
-      [0, 1],
-      [0, -1],
-    ];
-    for (const [dx, dy] of dArr) {
-      const adjCell = this.reactor.findCell({ x: this.x + dx, y: this.y + dy });
-      if (adjCell) {
-        this._adjacentCells.push(adjCell);
-      }
-    }
+    const _tryPushAdjacentCell = (pos: Position) => {
+      const found = this.reactor.findCell(pos);
+      found && this._adjacentCells?.push(found);
+    };
+    [
+      { x: this.x + 1, y: this.y },
+      { x: this.x - 1, y: this.y },
+      { x: this.x, y: this.y + 1 },
+      { x: this.x, y: this.y - 1 },
+    ].forEach(_tryPushAdjacentCell);
   }
   /**
    * Get adjacent cells.
@@ -109,6 +107,44 @@ export default class Cell {
     } else {
       this._computeAdjacentCells();
       return this._adjacentCells as Cell[];
+    }
+  }
+  /**
+   * Clear adjacent rods cache
+   */
+  getAdjacentCellsCache() {
+    this._adjacentCells = [];
+  }
+
+  /**
+   * Get the edge rods.
+   * @param pos the position relative to current cell
+   * @throws if the pos is not a valid adjacent position
+   */
+  getEgdeRods(pos: Position): Array<Rod | null> {
+    const findRods = (...positions: Position[]) => positions.map(this.findRod);
+    if (this.type === '1x1') {
+      return findRods({ x: 0, y: 0 });
+    } else {
+      /**
+       * +--------->X
+       * | 0,0 1,0
+       * |
+       * | 0,1 1,1
+       * v
+       * Y
+       */
+      if (pos.x === 1 && pos.y === 0) {
+        return findRods({ x: 1, y: 0 }, { x: 1, y: 1 });
+      } else if (pos.x === -1 && pos.y === 0) {
+        return findRods({ x: 0, y: 0 }, { x: 0, y: 1 });
+      } else if (pos.x === 0 && pos.y === 1) {
+        return findRods({ x: 0, y: 1 }, { x: 1, y: 1 });
+      } else if (pos.x === 0 && pos.y === -1) {
+        return findRods({ x: 0, y: 0 }, { x: 1, y: 0 });
+      } else {
+        throw new Error(`The position (${pos.x},${pos.y}) is not a valid adjacent position`);
+      }
     }
   }
 }

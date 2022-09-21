@@ -1,5 +1,6 @@
 import { Position } from 'src/types';
 import Cell, { CellInput } from './cell';
+import Rod from './rod';
 import RodTypeRegistry from './rodTypeRegistry';
 
 /** Configuration of reactor */
@@ -12,6 +13,10 @@ export interface ReactorInput {
 export class Reactor {
   registry: RodTypeRegistry;
   cells: Cell[];
+
+  get rods(): Rod[] {
+    return this.cells.flatMap((x) => x.rods);
+  }
 
   /**
    * Construct new reactor.
